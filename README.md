@@ -5,6 +5,7 @@ Python simulation where a flock of birds adapts its movement using retrieval-aug
 
 This project simulates flocking behavior with predator interaction using boids algorithm and RAG (Retrieval-Augmented Generation).
 
+
 ## Setup
 
 1. Clone the repository:
