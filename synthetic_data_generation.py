@@ -272,7 +272,12 @@ def main(num_generations: int):
         print(f"- Predator: {predator_collection_name}")
         
         # Create new collections for this generation
-        flock_collection = flock_client.create_collection(flock_collection_name)
+        # flock_collection = flock_client.create_collection(flock_collection_name)
+        try:
+            flock_collection = flock_client.create_collection(flock_collection_name)
+        except chromadb.errors.UniqueConstraintError:
+            print(f"Collection {flock_collection_name} already exists. Skipping creation.")
+
         predator_collection = predator_client.create_collection(predator_collection_name)
         
         # Create Chroma instances
@@ -467,7 +472,7 @@ def store_data_in_chromadb(csv_files_path, vector_store_path):
         return False
 
 if __name__ == "__main__":
-    main(num_generations=50)
+    main(num_generations=3)
     
     # After generating synthetic data, store it in ChromaDB
     csv_files_path = r"C:\Users\yench\Documents\Flock_RAG\flock_data"
