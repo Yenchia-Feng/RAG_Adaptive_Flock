@@ -1,0 +1,7 @@
+numpy
+matplotlib
+chromadb
+langchain
+langchain-openai
+python-dotenv
+ffmpeg-python 
