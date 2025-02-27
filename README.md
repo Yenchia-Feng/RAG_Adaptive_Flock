@@ -99,8 +99,9 @@ See `requirements.txt` for full Python package requirements.
 
 ## Project Structure
 
-- `strategy_animation.py`: Main simulation script
+- `adaptation.py`: Main simulation script
 - `simulation.py`: Boid and flock behavior implementation
 - `synthetic_data_generation.py`: Data generation for RAG
+- `baseline_flock_animation.py`: Animates baseline flock behavior with predator
 - `flock_data/`: Directory containing training data
 - `vector_stores/`: Directory containing ChromaDB collections
