@@ -227,8 +227,8 @@ def generate_predator_path(num_steps: int = 500, dt: float = 0.1) -> str:
 def save_predator_path(filename: str = 'predator_path.csv'):
     """Generate and save predator path data to CSV file"""
     csv_data = generate_predator_path()
-    if csv_data:
-    with open(filename, 'w') as f:
+    if csv_data:  
+        with open(filename, 'w') as f:
             # Add header
             f.write("timestep,dx,dy,dvx,dvy\n")
             # Add data
