@@ -64,8 +64,8 @@ These force vectors are then applied to update the boids' movement for the next 
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/your-repo-name.git
-cd your-repo-name
+git clone https://github.com/Yenchia-Feng/RAG_Adaptive_Flock.git
+cd RAG_Adaptive_Flock
 ```
 
 2. Install dependencies:
@@ -82,6 +82,9 @@ OPENAI_API_KEY=your_api_key_here
 ```bash
 python synthetic_data_generation.py
 ```
+
+**Note:** in synthetic_data_generation.py, the default number of data generation is 3. You can change this by setting `num_generations` to a different number.
+
 ```bash
 python baseline_flock_animation.py
 ```
