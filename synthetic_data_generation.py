@@ -366,119 +366,27 @@ def main(num_generations: int):
         flock_client = chromadb.PersistentClient(path=flock_store_path)
         predator_client = chromadb.PersistentClient(path=predator_store_path)
         
-        flock_collections = flock_client.list_collections()
-        predator_collections = predator_client.list_collections()
+        # Get collection names
+        flock_collection_names = flock_client.list_collections()
+        predator_collection_names = predator_client.list_collections()
         
-        print(f"Found {len(flock_collections)} flock collections:")
-        for collection in flock_collections:
-            print(f"- {collection.name}")
+        print(f"Found {len(flock_collection_names)} flock collections:")
+        for collection_name in flock_collection_names:
+            # Get collection to access its properties
+            collection = flock_client.get_collection(name=collection_name)
+            print(f"- {collection_name} (count: {collection.count()})")
         
-        print(f"\nFound {len(predator_collections)} predator collections:")
-        for collection in predator_collections:
-            print(f"- {collection.name}")
+        print(f"\nFound {len(predator_collection_names)} predator collections:")
+        for collection_name in predator_collection_names:
+            # Get collection to access its properties
+            collection = predator_client.get_collection(name=collection_name)
+            print(f"- {collection_name} (count: {collection.count()})")
             
     except Exception as e:
         print(f"Error during final verification: {e}")
-
-def store_data_in_chromadb(csv_files_path, vector_store_path):
-    """
-    Process CSV files and store them in ChromaDB collections
-    """
-    print("\nStoring data in ChromaDB...")
-    
-    # Connect to collections
-    try:
-        # Connect to flock_store (vectors)
-        store_client = chromadb.PersistentClient(path=vector_store_path)
-        try:
-            flock_store = store_client.get_collection("flock_store")
-            print("Found existing flock_store collection")
-        except chromadb.errors.InvalidCollectionException:
-            print("Creating flock_store collection...")
-            flock_store = store_client.create_collection("flock_store")
-        
-        # Connect to flock_data (documents)
-        data_client = chromadb.PersistentClient(path=csv_files_path)
-        try:
-            flock_data = data_client.get_collection("flock_data")
-            print("Found existing flock_data collection")
-        except chromadb.errors.InvalidCollectionException:
-            print("Creating flock_data collection...")
-            flock_data = data_client.create_collection("flock_data")
-            
-            # Now populate the newly created collection
-            print("Populating flock_data collection from CSV files...")
-            embeddings = OpenAIEmbeddings()
-            
-            files = [f for f in os.listdir(csv_files_path) if f.endswith('.csv')]
-            total_files = len(files)
-            
-            for file_idx, file in enumerate(files, 1):
-                print(f"\nProcessing file {file_idx}/{total_files}: {file}")
-                file_path = os.path.join(csv_files_path, file)
-                with open(file_path, 'r') as f:
-                    # Skip header
-                    next(f)
-                    batch_size = 100
-                    batch_docs = []
-                    batch_ids = []
-                    batch_metadata = []
-                    total_lines = 0
-                    
-                    for i, line in enumerate(f):
-                        data = line.strip()
-                        if data:
-                            batch_docs.append(data)
-                            batch_ids.append(f"{file}_{i}")
-                            batch_metadata.append({"source": file})
-                            
-                            # Process in batches to speed up
-                            if len(batch_docs) >= batch_size:
-                                batch_embeddings = [embeddings.embed_query(doc) for doc in batch_docs]
-                                flock_data.add(
-                                    documents=batch_docs,
-                                    embeddings=batch_embeddings,
-                                    ids=batch_ids,
-                                    metadatas=batch_metadata
-                                )
-                                total_lines += len(batch_docs)
-                                print(f"Processed {total_lines} lines...")
-                                batch_docs = []
-                                batch_ids = []
-                                batch_metadata = []
-                    
-                    # Process remaining documents
-                    if batch_docs:
-                        batch_embeddings = [embeddings.embed_query(doc) for doc in batch_docs]
-                        flock_data.add(
-                            documents=batch_docs,
-                            embeddings=batch_embeddings,
-                            ids=batch_ids,
-                            metadatas=batch_metadata
-                        )
-                        total_lines += len(batch_docs)
-                
-                print(f"Finished processing {file} ({total_lines} lines)")
-            
-            print("\nFinished populating collection")
-        
-        print(f"Collection now contains {flock_data.count()} documents")
-        return True
-        
-    except Exception as e:
-        print(f"Error accessing/populating collections: {e}")
         import traceback
         print(traceback.format_exc())
-        return False
 
 if __name__ == "__main__":
-    main(num_generations=3)
-    
-    # After generating synthetic data, store it in ChromaDB
-    csv_files_path = r"C:\Users\yench\Documents\Flock_RAG\flock_data"
-    vector_store_path = r"C:\Users\yench\Documents\Flock_RAG\vector_stores"
-    
-    if store_data_in_chromadb(csv_files_path, vector_store_path):
-        print("Successfully stored data in ChromaDB")
-    else:
-        print("Failed to store data in ChromaDB")
+    main(num_generations=50)
+    print("\nData generation complete")
