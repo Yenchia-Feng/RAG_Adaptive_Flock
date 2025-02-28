@@ -3,5 +3,6 @@ matplotlib
 chromadb
 langchain
 langchain-openai
+langchain-chroma
 python-dotenv
 ffmpeg-python 
